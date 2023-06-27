@@ -17,6 +17,7 @@
  */
 #include "src/Logger.h"
 #include "AppLauncher.h"
+#include "ForeFlightApp.h"
 #include "ChartsApp.h"
 #include "NotesApp.h"
 #include "About.h"
@@ -36,6 +37,7 @@ AppLauncher::AppLauncher(FuncsPtr appFuncs):
     cont->setLayoutGrid();
     std::string root = api().getDataPath() + "icons/";
 
+    addEntry<ForeFlightApp>("ForeFlight", root + "foreflight.png", AppId::FOREFLIGHT);
     addEntry<ChartsApp>("Charts", root + "folder.png", AppId::CHARTS);
     addEntry<AirportApp>("Airports", root + "if_xmag_3617.png", AppId::AIRPORTS);
     addEntry<RouteApp>("Routes", root + "if_applications-internet_118835.png", AppId::ROUTES);

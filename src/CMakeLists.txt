@@ -29,6 +29,8 @@ include_directories(
 
 add_definitions(-DCURL_STATICLIB)
 
+target_compile_options(avitab_common PRIVATE -Wno-conversion)
+
 target_link_libraries(avitab_common
     ${PROJECT_SOURCE_DIR}/build-third/lib/libgeotiff.a
     ${PROJECT_SOURCE_DIR}/build-third/lib/libproj.a
@@ -73,6 +75,7 @@ elseif(APPLE)
     add_definitions(-DGL_SILENCE_DEPRECATION)
     include_directories("/usr/local/include")
     link_directories("/usr/local/lib")
+    target_compile_options(avitab_plugin PRIVATE -Wno-conversion)
     target_link_libraries(avitab_plugin
         avitab_xplane
         avitab_common
@@ -126,6 +129,7 @@ elseif(APPLE)
     target_link_directories(AviTab-standalone PRIVATE ${GLFW_LIBRARY_DIRS})
 
     add_definitions(-DGL_SILENCE_DEPRECATION)
+    target_compile_options(AviTab-standalone PRIVATE -Wno-conversion)
     target_link_libraries(AviTab-standalone
         avitab_standalone
         avitab_common
@@ -180,3 +184,17 @@ if(WIN32 AND DEFINED ENV{MSFS_SDK})
 
 endif()
 
+
+#set(CMAKE_PREFIX_PATH /Users/seppo/git/libvncserver)
+find_package(LibVNCServer)
+if(LibVNCServer_FOUND)
+    message(STATUS "${LibVNCServer_DIR}")
+	# libs and headers location are now accessible via properties, but you only
+	# need to add the respective export target to your project's target_link_libraries,
+	# cmake will automatically add libs and headers
+	# eg: add client (YOUR_PROJECT_TARGET being a placeholder for your real target -
+	# it must be defined by add_executable or add_library):
+	target_link_libraries(avitab_common LibVNCServer::vncclient)
+	# add server:
+	# target_link_libraries(avitab_plugin LibVNCServer::vncserver)
+endif()

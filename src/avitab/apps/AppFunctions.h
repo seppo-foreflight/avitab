@@ -28,6 +28,7 @@
 namespace avitab {
 
 enum class AppId {
+    FOREFLIGHT,
     CHARTS,
     AIRPORTS,
     ROUTES,

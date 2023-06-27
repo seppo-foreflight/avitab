@@ -56,6 +56,7 @@ void AviTab::startApp() {
     env->createCommand("AviTab/Home", "Home Button",[this] (CommandState s) { if (s == CommandState::START) onHomeButton(); });
 
     // App commands
+    env->createCommand("AviTab/foreflight", "ForeFlight", [this] (CommandState s) { if (s == CommandState::START) showApp(AppId::FOREFLIGHT); });
     env->createCommand("AviTab/app_charts", "Charts App", [this] (CommandState s) { if (s == CommandState::START) showApp(AppId::CHARTS); });
     env->createCommand("AviTab/app_airports", "Airports App", [this] (CommandState s) { if (s == CommandState::START) showApp(AppId::AIRPORTS); });
     env->createCommand("AviTab/app_routes", "Routes App", [this] (CommandState s) { if (s == CommandState::START) showApp(AppId::ROUTES); });
