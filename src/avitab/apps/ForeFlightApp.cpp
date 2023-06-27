@@ -30,14 +30,29 @@ ForeFlightApp::ForeFlightApp(FuncsPtr appFuncs):
 
     window->setOnClose([this] () { exit(); });
     mapImage = std::make_shared<img::Image>(window->getContentWidth(), window->getContentHeight(), img::COLOR_TRANSPARENT);
-
+    static int last_x, last_y;
+    static bool last_start, last_end; 
     mapWidget = std::make_shared<PixMap>(window);
     mapWidget->setClickable(true);
     mapWidget->setClickHandler([&] (int x, int y, bool start, bool end) { 
-        if (start || end) {
+        printf("%d %d %d %d\n", x, y, start, end);
+       
+         if (x != last_x || y != last_y || start != last_start || end != last_end) {
             printf("%d %d %d %d\n", x, y, start, end);
-            SendPointerEvent(client, x, y, rfbButton1Mask);
+
+        if(start){
+            SendPointerEvent(client, x, y, 1);
+        } else if(end){
+            SendPointerEvent(client, x, y, 3);
+        } else {
+            SendPointerEvent(client, x, y, 2);
         }
+            last_x = x;
+            last_y = y;
+            last_start = start;
+            last_end = end;
+        }
+
     });
 
     // mapWidget->setClickable(true);
@@ -61,7 +76,7 @@ void ForeFlightApp::resume() {
 
     char *name = (char*)"avitab";
     char encodings[] = {"-encodings"};
-    char encodingLevel[] = {"raw"};
+    char encodingLevel[] = {"ultra"};
     char compress[] = {"-compress"};
     char compressLevel = 0;
 
