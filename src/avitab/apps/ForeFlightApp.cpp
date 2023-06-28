@@ -29,7 +29,7 @@ ForeFlightApp::ForeFlightApp(FuncsPtr appFuncs):
     printf("Welcome to AviTab ForeFlight!\n");
 
     window->setOnClose([this] () { exit(); });
-    mapImage = std::make_shared<img::Image>(598, 408, img::COLOR_TRANSPARENT);
+    mapImage = std::make_shared<img::Image>(642, 438, img::COLOR_TRANSPARENT);
     static int last_x, last_y;
     static bool last_start, last_end; 
     static std::chrono::time_point last_time = std::chrono::system_clock::now();
@@ -71,6 +71,10 @@ void ForeFlightApp::resume() {
     printf("resume\n");
 
     suspended = false;
+
+    if (client) {
+        return;
+    }
     
     const char *serverIP = "10.81.1.187";//"192.168.1.63";//"172.16.97.70";//"192.168.0.29";
     int port = 5900;

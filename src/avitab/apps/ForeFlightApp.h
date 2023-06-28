@@ -44,7 +44,7 @@ private:
     static void frameBufferUpdateWrapper(rfbClient* client, int x, int y, int w, int h);
     void frameBufferUpdate(int x, int y, int w, int h);
 
-    rfbClient* client;
+    rfbClient* client = NULL;
     bool suspended = true;
 };
 
