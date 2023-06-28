@@ -29,24 +29,32 @@ ForeFlightApp::ForeFlightApp(FuncsPtr appFuncs):
     printf("Welcome to AviTab ForeFlight!\n");
 
     window->setOnClose([this] () { exit(); });
-    mapImage = std::make_shared<img::Image>(window->getContentWidth(), window->getContentHeight(), img::COLOR_TRANSPARENT);
+    mapImage = std::make_shared<img::Image>(598, 408, img::COLOR_TRANSPARENT);
     static int last_x, last_y;
     static bool last_start, last_end; 
+    static std::chrono::time_point last_time = std::chrono::system_clock::now();
+
     mapWidget = std::make_shared<PixMap>(window);
     mapWidget->setClickable(true);
-    mapWidget->setClickHandler([&] (int x, int y, bool start, bool end) { 
-        printf("%d %d %d %d\n", x, y, start, end);
-       
-         if (x != last_x || y != last_y || start != last_start || end != last_end) {
-            printf("%d %d %d %d\n", x, y, start, end);
+    mapWidget->setClickHandler([&] (int x, int y, bool start, bool end) {
 
-        if(start){
-            SendPointerEvent(client, x, y, 1);
-        } else if(end){
-            SendPointerEvent(client, x, y, 3);
-        } else {
-            SendPointerEvent(client, x, y, 2);
+        if (!start && !end) {
+            int elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - last_time).count();
+            if (elapsed_ms < 200) {
+                return;
+            }
         }
+        last_time = std::chrono::system_clock::now();
+
+        if (x != last_x || y != last_y || start != last_start || end != last_end) {
+            printf("%d %d %d %d\n", x, y, start, end);
+            if(start){
+                SendPointerEvent(client, x, y, 1);
+            } else if(end){
+                SendPointerEvent(client, x, y, 3);
+            } else {
+                SendPointerEvent(client, x, y, 2);
+            }
             last_x = x;
             last_y = y;
             last_start = start;
@@ -113,7 +121,7 @@ void ForeFlightApp::frameBufferUpdate(int x, int y, int w, int h) {
     auto dest_w = mapImage->getWidth();
     auto dest_h = mapImage->getHeight();
 
-    printf("Update %d %d %d %d, dest: %d %d\n", x, y, w, h, dest_w, dest_h);
+    // printf("Update %d %d %d %d, dest: %d %d\n", x, y, w, h, dest_w, dest_h);
 
     uint32_t *srcPtr = (uint32_t*)client->frameBuffer;
     uint32_t *destPtr = mapImage->getPixels();
@@ -135,7 +143,7 @@ bool ForeFlightApp::onTimer() {
     }    
     int n = WaitForMessage(client,50);
 	if (n > 0) {
-        printf("Handle\n");
+        // printf("Handle\n");
         HandleRFBServerMessage(client);
     }
     return true;
